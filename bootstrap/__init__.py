@@ -103,9 +103,13 @@ def _create_user(username):
     if ret_code != 0:
         sys.exit("Failed to create user")
     home_dir = os.path.join("/home", username)
-    os.mkdir(home_dir)
+    if not os.path.exists(home_dir):
+        os.mkdir(home_dir)
+
     ssh_dir = os.path.join(home_dir, ".ssh")
-    os.mkdir(ssh_dir)
+    if not os.path.exists(ssh_dir):
+        os.mkdir(ssh_dir)
+
     os.chmod(home_dir, 700)
     ret_code = call(["usermod", "-s", "/bin/bash", username])
     if ret_code != 0:
