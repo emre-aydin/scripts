@@ -161,7 +161,8 @@ def _allow_passwordless_sudo(username):
         with open(file_path, mode='r') as fp:
             for line in fp:
                 if line.startswith(username):
-                    sys.exit("Already contains entry for user %s" % username)
+                    print("Already contains entry for user %s" % username)
+                    return
     with open(file_path, mode='a') as fp:
         fp.write(cmd)
         print("Allowed passwordless sudo access for %s" % username)
