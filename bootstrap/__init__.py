@@ -113,7 +113,7 @@ def _create_user(username):
     if not os.path.exists(ssh_dir):
         os.mkdir(ssh_dir)
 
-    os.chmod(home_dir, 700)
+    os.chmod(ssh_dir, 700)
     ret_code = call(["usermod", "-s", "/bin/bash", username])
     if ret_code != 0:
         sys.exit("Failed to set shell for user")
