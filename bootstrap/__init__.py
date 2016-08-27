@@ -22,7 +22,7 @@ def configure_passwordless_sudo(args):
         print("Allowed passwordless sudo access for %s" % username)
 
 
-def configure_locales():
+def configure_locales(args):
     _ensure_root_user()
 
     with open("/etc/default/locale", mode="w") as fp:
