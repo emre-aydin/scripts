@@ -1,5 +1,8 @@
 import os
 import sys
+from subprocess import call
+
+from util import get_uid, get_gid, demote
 
 
 def configure_passwordless_sudo(args):
@@ -46,6 +49,24 @@ LC_ALL="en_US.UTF-8"
     print("Log out and log back in for the changes to take effect")
 
 
+def create_psql_db(args):
+    _ensure_root_user()
+
+    postgres_uid = get_uid("postgres")
+    postgres_gid = get_gid("postgres")
+
+    ret_code = call(["psql", "-c", "CREATE ROLE %s LOGIN PASSWORD '%s'" % (args.db_user, args.db_pass)],
+                    preexec_fn=demote(postgres_uid, postgres_gid))
+    if ret_code != 0:
+        sys.exit("Failed to create database role")
+
+    ret_code = call(["psql", "-c", "CREATE DATABASE %s OWNER %s" % (args.db_name, args.db_user)],
+                    preexec_fn=demote(postgres_uid, postgres_gid))
+    if ret_code != 0:
+        sys.exit("Failed to create database")
+
+
 def _ensure_root_user():
     if os.geteuid() != 0:
         sys.exit("Need to run as root")
+
