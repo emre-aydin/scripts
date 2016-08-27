@@ -141,7 +141,7 @@ def _setup_firewall():
 
 def _configure_ssh():
     lines = []
-    sshd_config_file = "/etc/ssh/sshd_config"
+    sshd_config_file = "/etc/ssh/ssh_config"
     with open(sshd_config_file) as fp:
         for cur_line in fp:
             if cur_line.startswith("PermitRootLogin "):
