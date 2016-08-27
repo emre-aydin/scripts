@@ -96,7 +96,9 @@ def _add_public_key(username, public_key_path, home_dir, ssh_dir):
     with open(authorized_keys_file, "a") as fp, open(public_key_path) as pub_key_fp:
         fp.write(pub_key_fp.readline())
     os.chmod(authorized_keys_file, 400)
-    os.chown(home_dir, get_uid(username), get_gid(username))
+    ret_code = call(["chown", "%s.%s" % (username, username), home_dir, "-R"])
+    if ret_code != 0:
+        sys.exit("Failed to chown home directory for user")
 
 
 def _create_user(username):
