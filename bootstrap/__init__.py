@@ -122,7 +122,7 @@ def _create_user(username):
 
 def _setup_firewall():
     def _allow_port(port):
-        ret_code = call(["ufw", "allow", port])
+        ret_code = call(["ufw", "allow", str(port)])
         if ret_code != 0:
             sys.exit("Failed to allow port %s" % port)
 
