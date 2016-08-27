@@ -143,7 +143,7 @@ def _configure_ssh():
             lines.append("PasswordAuthentication no")
         else:
             lines.append(cur_line)
-    with open("etc/ssh_sshd_config", "w") as fp:
+    with open(sshd_config_file, "w") as fp:
         fp.writelines(lines)
 
 
