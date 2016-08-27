@@ -1,6 +1,7 @@
 import os
 import sys
 from subprocess import call
+import pwd
 
 from util import get_uid, get_gid, demote
 
@@ -99,9 +100,11 @@ def _add_public_key(username, public_key_path, home_dir, ssh_dir):
 
 
 def _create_user(username):
-    ret_code = call(["useradd", username])
-    if ret_code != 0:
-        sys.exit("Failed to create user")
+    if username not in [p.pw_name for p in pwd.getpwall()]:
+        ret_code = call(["useradd", username])
+        if ret_code != 0:
+            sys.exit("Failed to create user")
+
     home_dir = os.path.join("/home", username)
     if not os.path.exists(home_dir):
         os.mkdir(home_dir)
