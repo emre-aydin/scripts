@@ -134,7 +134,7 @@ def _setup_firewall():
     if ret_code != 0:
         sys.exit("Failed to disable ufw")
 
-    ret_code = call(["ufw", "enable"])
+    ret_code = call(["ufw", "--force", "enable"])
     if ret_code != 0:
         sys.exit("Failed to enable ufw")
 
