@@ -43,6 +43,8 @@ LC_IDENTIFICATION="en_US.UTF-8"
 LC_ALL="en_US.UTF-8"
 """)
 
+    print("Log out and log back in for the changes to take effect")
+
 
 def _ensure_root_user():
     if os.geteuid() != 0:
