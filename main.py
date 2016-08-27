@@ -1,6 +1,7 @@
 import argparse
 
-from bootstrap import configure_passwordless_sudo, configure_locales, create_psql_db, delete_psql_db_and_user
+from bootstrap import configure_passwordless_sudo, configure_locales, create_psql_db, delete_psql_db_and_user, \
+    create_user
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -24,6 +25,12 @@ if __name__ == "__main__":
     psql_delete_parser.add_argument("db_name", help="Name of the database")
     psql_delete_parser.add_argument("db_user", help="Name of the database user")
     psql_delete_parser.set_defaults(func=delete_psql_db_and_user)
+
+    create_user_parser = subparsers.add_parser("create-user", help="Creates the initial user, configures SSH and "
+                                                                   "sets up firewall")
+    create_user_parser.add_argument("username", help="Username for the initial user")
+    create_user_parser.add_argument("public_key_path", help="Path of the public key to add as authorized key")
+    create_user_parser.set_defaults(func=create_user)
 
     args = parser.parse_args()
     args.func(args)
