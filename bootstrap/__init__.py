@@ -145,9 +145,9 @@ def _configure_ssh():
     with open(sshd_config_file) as fp:
         for cur_line in fp:
             if cur_line.startswith("PermitRootLogin "):
-                lines.append("PermitRootLogin no")
+                lines.append("PermitRootLogin no\n")
             elif cur_line.startswith("PasswordAuthentication "):
-                lines.append("PasswordAuthentication no")
+                lines.append("PasswordAuthentication no\n")
             else:
                 lines.append(cur_line)
 
