@@ -66,6 +66,23 @@ def create_psql_db(args):
         sys.exit("Failed to create database")
 
 
+def delete_psql_db_and_user(args):
+    _ensure_root_user()
+
+    postgres_uid = get_uid("postgres")
+    postgres_gid = get_gid("postgres")
+
+    ret_code = call(["psql", "-c", "DROP DATABASE IF EXISTS %s" % args.db_name],
+                    preexec_fn=demote(postgres_uid, postgres_gid))
+    if ret_code != 0:
+        sys.exit("Failed to delete database")
+
+    ret_code = call(["psql", "-c", "DROP ROLE IF EXISTS %s" % args.db_user],
+                    preexec_fn=demote(postgres_uid, postgres_gid))
+    if ret_code != 0:
+        sys.exit("Failed to delete role")
+
+
 def _ensure_root_user():
     if os.geteuid() != 0:
         sys.exit("Need to run as root")
