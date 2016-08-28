@@ -104,7 +104,7 @@ def install_lets_encrypt(args):
 
     call(["service", "nginx", "stop"])
 
-    ret_code = call(["letsencrypt-auto"])
+    ret_code = call(["letsencrypt-auto"], cwd=install_dir)
     if ret_code != 0:
         sys.exit("Failed to install Let's Encrypt")
 
