@@ -1,7 +1,7 @@
 import argparse
 
 from bootstrap import configure_passwordless_sudo, configure_locales, create_psql_db, delete_psql_db_and_user, \
-    create_user
+    create_user, install_lets_encrypt
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -31,6 +31,9 @@ if __name__ == "__main__":
     create_user_parser.add_argument("username", help="Username for the initial user")
     create_user_parser.add_argument("public_key_path", help="Path of the public key to add as authorized key")
     create_user_parser.set_defaults(func=create_user)
+
+    install_le_parser = subparsers.add_parser("install-letsencrypt", help="Clones and installs Let's Encrypt")
+    install_le_parser.set_defaults(func=install_lets_encrypt)
 
     args = parser.parse_args()
     args.func(args)

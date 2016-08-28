@@ -91,6 +91,24 @@ def create_user(args):
         sys.exit("Failed to restart SSH service!")
 
 
+def install_lets_encrypt(args):
+    _ensure_root_user()
+
+    install_dir = "/opt/letsencrypt"
+    if os.path.exists(install_dir):
+        sys.exit("Already installed")
+
+    ret_code = call(["git", "clone", "https://github.com/letsencrypt/letsencrypt", install_dir])
+    if ret_code != 0:
+        sys.exit("Failed to clone Let's Encrypt repository")
+
+    call(["service", "nginx", "stop"])
+
+    ret_code = call(["letsencrypt-auto"])
+    if ret_code != 0:
+        sys.exit("Failed to install Let's Encrypt")
+
+
 def _add_public_key(username, public_key_path, home_dir, ssh_dir):
     authorized_keys_file = os.path.join(ssh_dir, "authorized_keys")
     with open(authorized_keys_file, "a") as fp, open(public_key_path) as pub_key_fp:
