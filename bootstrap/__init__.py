@@ -122,7 +122,7 @@ def renew_ssl_certificates(args):
     _ensure_root_user()
 
     ret_code = call(["/opt/letsencrypt/letsencrypt-auto", "renew", "--standalone", "--pre-hook",
-                     "'service nginx stop'", "'service nginx stop'"])
+                     "service nginx stop", "service nginx stop"])
     if ret_code != 0:
         sys.exit("Failed to renew SSL certificates")
 
