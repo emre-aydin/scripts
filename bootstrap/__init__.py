@@ -177,14 +177,14 @@ def install_jdk(args):
 
     jdk_dir = "/opt/jdk/8.91"
     if not os.path.exists(os.path.join(jdk_dir, "bin", "java")):
-        with tempfile.NamedTemporaryFile() as fp:
-            print("Downloading Oracle JDK to temporary directory: %s" % fp.name)
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            print("Downloading Oracle JDK to temporary directory: %s" % tmpdirname)
 
             base_name = "jdk-8u91-linux-x64"
             file_name = "%s.tar.gz" % base_name
             ret_code = call(["wget", "--no-check-certificate", "--no-cookies",
                              "--header", "Cookie: oraclelicense=accept-securebackup-cookie",
-                             "http://download.oracle.com/otn-pub/java/jdk/8u91-b14/%s" % file_name], cwd=fp.name)
+                             "http://download.oracle.com/otn-pub/java/jdk/8u91-b14/%s" % file_name], cwd=tmpdirname)
             if ret_code != 0:
                 sys.exit("Failed to download Oracle JDK")
 
@@ -195,7 +195,7 @@ def install_jdk(args):
             if not os.path.exists(jdk_dir):
                 os.makedirs(jdk_dir)
 
-            shutil.move(os.path.join(fp.name, base_name), os.path.join(jdk_dir, "8.91"))
+            shutil.move(os.path.join(tmpdirname, base_name), os.path.join(jdk_dir, "8.91"))
 
 
 def _generate_dhparam():
