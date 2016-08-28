@@ -1,7 +1,7 @@
 import argparse
 
 from bootstrap import configure_passwordless_sudo, configure_locales, create_psql_db, delete_psql_db_and_user, \
-    create_user, install_lets_encrypt, get_ssl_certificate, renew_ssl_certificates, configure_nginx
+    create_user, install_lets_encrypt, get_ssl_certificate, renew_ssl_certificates, configure_nginx, install_jdk
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -45,6 +45,9 @@ if __name__ == "__main__":
 
     config_nginx_parser = subparsers.add_parser("config-nginx", help="Install and configure Nginx")
     config_nginx_parser.set_defaults(func=configure_nginx)
+
+    install_jdk_parser = subparsers.add_parser("install-jdk", help="Install Oracle JDK")
+    install_jdk_parser.set_defaults(func=install_jdk)
 
     args = parser.parse_args()
     args.func(args)
