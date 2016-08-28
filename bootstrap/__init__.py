@@ -165,7 +165,7 @@ def configure_nginx(args):
     _generate_dhparam()
     _configure_ssl_params()
 
-    ret_code = call(["service", "restart", "nginx"])
+    ret_code = call(["service", "nginx", "restart"])
     if ret_code != 0:
         sys.exit("Failed to restart Nginx")
 
