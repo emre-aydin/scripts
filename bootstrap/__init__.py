@@ -188,7 +188,7 @@ def install_jdk(args):
             if ret_code != 0:
                 sys.exit("Failed to download Oracle JDK")
 
-            ret_code = call(["tar", "-zxvf", file_name])
+            ret_code = call(["tar", "-zxvf", file_name], cwd=tmpdirname)
             if ret_code != 0:
                 sys.exit("Failed to extract archive")
 
