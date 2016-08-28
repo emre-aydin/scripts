@@ -195,7 +195,7 @@ def install_jdk(args):
             if not os.path.exists(jdk_dir):
                 os.makedirs(jdk_dir)
 
-            shutil.move(os.path.join(tmpdirname, base_name), os.path.join(jdk_dir, "8.91"))
+            shutil.move(os.path.join(tmpdirname, base_name), jdk_dir)
 
 
 def _generate_dhparam():
