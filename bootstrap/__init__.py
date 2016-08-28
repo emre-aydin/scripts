@@ -102,11 +102,28 @@ def install_lets_encrypt(args):
     if ret_code != 0:
         sys.exit("Failed to clone Let's Encrypt repository")
 
+    call([os.path.join(install_dir, "letsencrypt-auto")])
+
+
+def get_ssl_certificate(args):
+    _ensure_root_user()
+
     call(["service", "nginx", "stop"])
 
-    ret_code = call([os.path.join(install_dir, "letsencrypt-auto")])
+    ret_code = call(["/opt/letsencrypt/letsencrypt-auto", "certonly", "--standalone", "-d", args.domain_name])
     if ret_code != 0:
-        sys.exit("Failed to install Let's Encrypt")
+        sys.exit("Failed to get SSL certificate")
+
+    call(["service", "nginx", "start"])
+
+
+def renew_ssl_certificates(args):
+    _ensure_root_user()
+
+    ret_code = call(["/opt/letsencrypt/letsencrypt-auto", "renew", "--standalone", "--pre-hook",
+                     "'service nginx stop'", "'service nginx stop'"])
+    if ret_code != 0:
+        sys.exit("Failed to renew SSL certificates")
 
 
 def _add_public_key(username, public_key_path, home_dir, ssh_dir):

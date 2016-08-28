@@ -1,7 +1,7 @@
 import argparse
 
 from bootstrap import configure_passwordless_sudo, configure_locales, create_psql_db, delete_psql_db_and_user, \
-    create_user, install_lets_encrypt
+    create_user, install_lets_encrypt, get_ssl_certificate, renew_ssl_certificates
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -34,6 +34,13 @@ if __name__ == "__main__":
 
     install_le_parser = subparsers.add_parser("install-letsencrypt", help="Clones and installs Let's Encrypt")
     install_le_parser.set_defaults(func=install_lets_encrypt)
+
+    get_ssl_parser = subparsers.add_parser("get-ssl-certificate", help="Gets SSL certificate for domain")
+    get_ssl_parser.add_argument("domain_name", help="Domain name")
+    get_ssl_parser.set_defaults(func=get_ssl_certificate)
+
+    renew_ssl_parser = subparsers.add_parser("renew-ssl-certificates", help="Renews all SSL certificates")
+    renew_ssl_parser.set_defaults(func=renew_ssl_certificates)
 
     args = parser.parse_args()
     args.func(args)
