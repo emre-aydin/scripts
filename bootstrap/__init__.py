@@ -175,8 +175,10 @@ def configure_nginx(args):
 def install_jdk(args):
     _ensure_root_user()
 
-    jdk_dir = "/opt/jdk/8.91"
-    if not os.path.exists(os.path.join(jdk_dir, "bin", "java")):
+    jdk_dir = "/opt/jdk"
+    target_dir = os.path.join(jdk_dir, "8.91")
+
+    if not os.path.exists(os.path.join(target_dir, "bin", "java")):
         with tempfile.TemporaryDirectory() as tmpdirname:
             print("Downloading Oracle JDK to temporary directory: %s" % tmpdirname)
 
@@ -195,6 +197,12 @@ def install_jdk(args):
                 os.makedirs(jdk_dir)
 
             shutil.move(os.path.join(tmpdirname, "jdk1.8.0_91"), jdk_dir)
+            shutil.move(os.path.join(jdk_dir, "jdk1.8.0_91"), target_dir)
+
+            symlink = os.path.join(jdk_dir, "current")
+            if os.path.exists(symlink):
+                os.remove(symlink)
+            os.symlink(target_dir, symlink)
 
 
 def _generate_dhparam():
