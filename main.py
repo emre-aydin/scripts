@@ -37,6 +37,7 @@ if __name__ == "__main__":
 
     get_ssl_parser = subparsers.add_parser("get-ssl-certificate", help="Gets SSL certificate for domain")
     get_ssl_parser.add_argument("domain_name", help="Domain name")
+    get_ssl_parser.add_argument("email", help="Contact email for recovery")
     get_ssl_parser.set_defaults(func=get_ssl_certificate)
 
     renew_ssl_parser = subparsers.add_parser("renew-ssl-certificates", help="Renews all SSL certificates")

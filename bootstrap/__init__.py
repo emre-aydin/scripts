@@ -110,7 +110,8 @@ def get_ssl_certificate(args):
 
     call(["service", "nginx", "stop"])
 
-    ret_code = call(["/opt/letsencrypt/letsencrypt-auto", "certonly", "--standalone", "-d", args.domain_name])
+    ret_code = call(["/opt/letsencrypt/letsencrypt-auto", "certonly", "--standalone", "-n", "-m", args.email,
+                     "-d", args.domain_name])
     if ret_code != 0:
         sys.exit("Failed to get SSL certificate")
 
