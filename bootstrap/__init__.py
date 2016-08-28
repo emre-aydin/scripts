@@ -5,6 +5,30 @@ import pwd
 
 from util import get_uid, get_gid, demote
 
+ssl_params = """
+# from https://cipherli.st/
+# and https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
+
+ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+ssl_prefer_server_ciphers on;
+ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+ssl_ecdh_curve secp384r1;
+ssl_session_cache shared:SSL:10m;
+ssl_session_tickets off;
+ssl_stapling on;
+ssl_stapling_verify on;
+resolver 8.8.8.8 8.8.4.4 valid=300s;
+resolver_timeout 5s;
+# Disable preloading HSTS for now.  You can use the commented out header line that includes
+# the "preload" directive if you understand the implications.
+#add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
+add_header Strict-Transport-Security "max-age=63072000; includeSubdomains";
+add_header X-Frame-Options DENY;
+add_header X-Content-Type-Options nosniff;
+
+ssl_dhparam /etc/ssl/certs/dhparam.pem;
+"""
+
 
 def configure_passwordless_sudo(args):
     _ensure_root_user()
@@ -125,6 +149,40 @@ def renew_ssl_certificates(args):
                      "service nginx stop", "--post-hook", "service nginx stop"])
     if ret_code != 0:
         sys.exit("Failed to renew SSL certificates")
+
+
+def configure_nginx(args):
+    _ensure_root_user()
+
+    ret_code = call(["apt", "install", "nginx-extras"])
+    if ret_code != 0:
+        sys.exit("Failed to install Nginx")
+
+    default_site_file = "/etc/nginx/sites-enabled/default"
+    if os.path.exists(default_site_file):
+        os.remove(default_site_file)
+
+    _generate_dhparam()
+    _configure_ssl_params()
+
+    ret_code = call(["service", "restart", "nginx"])
+    if ret_code != 0:
+        sys.exit("Failed to restart Nginx")
+
+
+def _generate_dhparam():
+    dh_param_file = "/etc/ssl/certs/dhparam.pem"
+    if not os.path.exists(dh_param_file):
+        ret_code = call(["openssl", "dhparam", "-out", dh_param_file, "2048"])
+        if ret_code != 0:
+            sys.exit("Failed to create dhparam.pem")
+
+
+def _configure_ssl_params():
+    ssl_params_file = "/etc/nginx/snippets/ssl-params.conf"
+    if not os.path.exists(ssl_params_file):
+        with open(ssl_params_file, "a") as fp:
+            fp.write(ssl_params)
 
 
 def _add_public_key(username, public_key_path, home_dir, ssh_dir):
